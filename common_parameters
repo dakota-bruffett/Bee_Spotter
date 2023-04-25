@@ -8,3 +8,5 @@ Camera (could get location data, bundle with picture + Date()), send to Firebase
 
 Map Activity (recalling all data on firebase) -> Add bee, or return. 
  (if back button is pressed, go to MainActivity only)
+
+https://developer.android.com/reference/android/content/SharedPreferences
