@@ -4,7 +4,6 @@ MapActivity - activity_map.xml
 Camera CameraActivity - activity_camera.xml
 
 Main -> Camera (picture data) -> Camera confirm (picture data)
-
 Camera (could get location data, bundle with picture + Date()), send to Firebase -> Map Activity
 
 Map Activity (recalling all data on firebase) -> Add bee, or return. 
