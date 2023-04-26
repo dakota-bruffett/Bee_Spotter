@@ -1,7 +1,8 @@
-MainActivity - activity_main.xml
-FragmentBeeListRecyclerView - fragment_bee_list_recycler_view.xml
-MapActivity - activity_map.xml 
-Camera CameraActivity - activity_camera.xml
+MainActivity.kt - activity_main.xml
+BeeListRecyclerViewAdapter.kt
+BeeListRecyclerViewItem.kt - bee_list_recycler_view_item.xml   
+MapActivity.kt - activity_map.xml 
+CameraActivity.kt - activity_camera.xml
 
 Main -> Camera (picture data) -> Camera confirm (picture data)
 Camera (could get location data, bundle with picture + Date()), send to Firebase -> Map Activity
