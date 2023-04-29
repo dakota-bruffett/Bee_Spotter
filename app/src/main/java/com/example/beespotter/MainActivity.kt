@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
+    // TODO ***** Need to update to be used with Fragments instead ****
 
     // todo update the icon graphic
+
 
     /*
     todo design overall layout in activity_main.xml
