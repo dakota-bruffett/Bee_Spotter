@@ -6,36 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/add_bee_at_location_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add A Bee at Location"
-        android:textAllCaps="false"
-        tools:layout_editor_absoluteX="122dp"
-        tools:layout_editor_absoluteY="622dp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="227dp"
-        android:layout_height="94dp"
-        android:text="BeeSpotter title, description, other design stuff"
-        tools:layout_editor_absoluteX="74dp"
-        tools:layout_editor_absoluteY="74dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/bee_list_recycler_view"
-        android:layout_width="382dp"
-        android:layout_height="373dp"
-        tools:layout_editor_absoluteX="13dp"
-        tools:layout_editor_absoluteY="198dp" />
-
-    <Button
-        android:id="@+id/view_map_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Map"
-        tools:layout_editor_absoluteX="32dp"
-        tools:layout_editor_absoluteY="691dp" />
-
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="com.example.beespotter.HomeFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="245dp"
+        tools:layout_editor_absoluteY="288dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

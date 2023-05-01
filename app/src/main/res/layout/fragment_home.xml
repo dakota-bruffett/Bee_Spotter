@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:backgroundTint="#34D500F9"
+    android:backgroundTintMode="src_atop"
+    tools:context=".HomeFragment">
+
+    <Button
+        android:id="@+id/add_bee_at_location_button"
+        android:layout_width="250dp"
+        android:layout_height="62dp"
+        android:text="Add A Bee at Location"
+        android:textAllCaps="false"
+        tools:layout_editor_absoluteX="70dp"
+        tools:layout_editor_absoluteY="589dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bee_list_recycler_view"
+        android:layout_width="400dp"
+        android:layout_height="362dp"
+        android:background="#6FDCFFBF"
+        android:backgroundTintMode="src_atop"
+        android:hapticFeedbackEnabled="true"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="154dp" />
+
+    <Button
+        android:id="@+id/view_map_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/pollen_yellow"
+        android:text="View Map"
+        android:textColor="@color/black"
+        tools:layout_editor_absoluteX="150dp"
+        tools:layout_editor_absoluteY="541dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

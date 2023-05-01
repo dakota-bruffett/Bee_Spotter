@@ -15,6 +15,5 @@ class BeeViewModel: ViewModel() {
     fun addBee(bee: Bee) {
         TODO("Not yet implimented")
     }
-
     // TODO Other Additions as needed.
 }
