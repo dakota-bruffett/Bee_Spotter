@@ -1,0 +1,14 @@
+MainActivity.kt - activity_main.xml // this is used to contain the Fragments
+HomeFragment.kt - fragment_home.xml // contains the main initial screen (what used to be activity_main.xml)
+BeeListRecyclerViewAdapter.kt
+BeeListRecyclerViewItem.kt - bee_list_recycler_view_item.xml   
+MapFragment.kt - fragment_map.xml 
+CameraActivity.kt - fragment_camera.xml
+
+Main -> Camera (picture data) -> Camera confirm (picture data)
+Camera (could get location data, bundle with picture + Date()), send to Firebase -> Map Fragment
+
+Map Activity (recalling all data on firebase) -> Add bee, or return. 
+ (if back button is pressed, go to MainActivity only)
+
+https://developer.android.com/reference/android/content/SharedPreferences
