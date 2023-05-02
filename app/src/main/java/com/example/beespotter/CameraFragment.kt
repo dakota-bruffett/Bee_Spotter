@@ -13,10 +13,10 @@ private const val BEELOCATION = "Bee location"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [CameraActvity.newInstance] factory method to
+ * Use the [CameraFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CameraActvity : Fragment() {
+class CameraFragment : Fragment() {
 
     private var Bee: String? = null
     private var Beelocation: String? = null
@@ -34,7 +34,8 @@ class CameraActvity : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_camera, container, false)
+        val view = inflater.inflate(R.layout.fragment_camera, container, false)
+        return view
     }
 
     companion object {
@@ -49,7 +50,7 @@ class CameraActvity : Fragment() {
 
         @JvmStatic
         fun newInstance(BEE: String, BEELOCATION : String) =
-            CameraActvity().apply {
+            CameraFragment().apply {
                 arguments = Bundle().apply {
                     putString(Bee, BEE)
                     putString(Beelocation, BEELOCATION)
