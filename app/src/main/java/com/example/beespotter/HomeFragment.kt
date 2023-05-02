@@ -9,21 +9,12 @@ import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 
-// TODO ***** Need to update to be used with Fragments instead ****
 
 // todo update the icon graphic
 
 
-/*
-todo design overall layout in fragment_home.xml
- - view map
- - Add bee at location
- - background, other design elements
- - Constrain layouts
-*/
 
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
 
     private lateinit var viewMapButton: Button
     private lateinit var addBeeButton: Button
