@@ -10,10 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 
 
-// todo update the icon graphic
-
-
-
 class HomeFragment : Fragment() {
 
     private lateinit var viewMapButton: Button
