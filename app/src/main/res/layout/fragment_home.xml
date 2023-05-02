@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_fragment"
     android:layout_width="match_parent"
@@ -11,31 +12,56 @@
 
     <Button
         android:id="@+id/add_bee_at_location_button"
-        android:layout_width="250dp"
-        android:layout_height="62dp"
-        android:text="Add A Bee at Location"
+        android:layout_width="275dp"
+        android:layout_height="50dp"
+        android:text="@string/add_a_bee_button_text"
         android:textAllCaps="false"
-        tools:layout_editor_absoluteX="70dp"
-        tools:layout_editor_absoluteY="589dp" />
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_map_button" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bee_list_recycler_view"
         android:layout_width="400dp"
         android:layout_height="362dp"
+        android:layout_marginTop="4dp"
         android:background="#6FDCFFBF"
         android:backgroundTintMode="src_atop"
         android:hapticFeedbackEnabled="true"
-        tools:layout_editor_absoluteX="5dp"
-        tools:layout_editor_absoluteY="154dp" />
+        app:layout_constraintBottom_toTopOf="@+id/view_map_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_card" />
 
     <Button
         android:id="@+id/view_map_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="275dp"
+        android:layout_height="50dp"
         android:backgroundTint="@color/pollen_yellow"
-        android:text="View Map"
+        android:text="@string/view_map_button_text"
         android:textColor="@color/black"
-        tools:layout_editor_absoluteX="150dp"
-        tools:layout_editor_absoluteY="541dp" />
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toTopOf="@+id/add_bee_at_location_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bee_list_recycler_view" />
+
+    <ImageView
+        android:id="@+id/title_card"
+        android:layout_width="418dp"
+        android:layout_height="136dp"
+        android:layout_marginTop="10sp"
+        android:src="@drawable/title_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="VisualLintBounds"
+        android:contentDescription="@string/beespotter_title_card_content_desc" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

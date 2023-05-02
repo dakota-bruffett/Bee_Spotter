@@ -3,7 +3,7 @@ HomeFragment.kt - fragment_home.xml // contains the main initial screen (what us
 BeeListRecyclerViewAdapter.kt
 BeeListRecyclerViewItem.kt - bee_list_recycler_view_item.xml   
 MapFragment.kt - fragment_map.xml 
-CameraActivity.kt - fragment_camera.xml
+CameraFragment.kt - fragment_camera.xml
 
 Main -> Camera (picture data) -> Camera confirm (picture data)
 Camera (could get location data, bundle with picture + Date()), send to Firebase -> Map Fragment

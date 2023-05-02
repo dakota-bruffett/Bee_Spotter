@@ -34,15 +34,12 @@ class HomeFragment : Fragment() {
     }
 
 
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
         initializeWidgets(view)
         setButtonOnClickListeners()
         return view
@@ -52,23 +49,18 @@ class HomeFragment : Fragment() {
     private fun setButtonOnClickListeners() {
         viewMapButton.setOnClickListener {
             // Map Intent - start.
-            showFragment("MAP")
-        }
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, MapFragment.newInstance(), "MAP")
+                .commit()        }
 
         addBeeButton.setOnClickListener {
-            // Camera Intent - start.
-
-            // Set listener for result codes:
-            // RESULT_OK -> "Bee Added"  Snackbar
-            // RESULT_CANCELLED ->  I think do nothing.
-            // no result
-            showFragment("CAMERA")
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, CameraFragment.newInstance(), "CAMERA")
+                .commit()
         }
     }
 
-    private fun showFragment(s: String) {
-        TODO("Not Yet Implemented - need clarification")
-    }
+
 
 
     private fun initializeWidgets(view: View) {
@@ -80,6 +72,5 @@ class HomeFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = HomeFragment()
-            }
     }
 }
