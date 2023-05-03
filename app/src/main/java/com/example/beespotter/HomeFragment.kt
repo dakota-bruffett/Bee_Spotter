@@ -1,11 +1,11 @@
 package com.example.beespotter
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 
@@ -38,13 +38,23 @@ class HomeFragment : Fragment() {
             // Map Intent - start.
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, MapFragment.newInstance(), "MAP")
-                .commit()        }
+                .addToBackStack("MAP")
+                .commit()
+        }
 
         addBeeButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, CameraFragment.newInstance(), "CAMERA")
+                .addToBackStack("CAMERA")
                 .commit()
         }
+//        }
+//        val button: Button
+//        button.setOnClickListener {
+//            parentFragmentManager.beginTransaction()
+//                .replace(R.id.fragmentContainer, HomeFragment.newInstance(), "HOME")
+//                .commit()
+//        }
     }
 
 
