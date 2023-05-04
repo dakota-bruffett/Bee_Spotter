@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.GeoPoint
@@ -17,42 +18,46 @@ const val TAG = "MAIN_ACTIVITY"
 class MainActivity : AppCompatActivity() {
     private lateinit var containerView: View
 
+    private val beeViewModel: BeeViewModel by lazy {
+        ViewModelProvider(this).get(BeeViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        requestLocationPermission()
-        verifyLocation()
         containerView = findViewById(R.id.fragmentContainer)
-
+        requestLocationPermission()
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "onResume(): ${currentUserLocation.toString()}")
+        Log.d(TAG, "onResume(): beeViewModel.currentUserLocation = ${beeViewModel.currentUserLocation.toString()}")
+        verifyLocation()
     }
 
     @SuppressLint("MissingPermission")  // There are checks in place already.
     fun verifyLocation() {
         // check for permissions and existance of maps, locations, etc.
 //        if (map == null) { return } // TODO This might be needed later
-        if (fusedLocationProvider == null) { return }
-        if (!locationPermissionGranted) {
-            currentUserLocation = null
+        if (beeViewModel.fusedLocationProvider == null) { return }
+        Log.d(TAG, "Value of fusedLocationProvider within verifyLocation() = ${beeViewModel.fusedLocationProvider.toString()}")
+        if (!beeViewModel.locationPermissionGranted) {
+            beeViewModel.currentUserLocation = null
             showSnackbar(getString(R.string.user_message_location_permission_needed))
             return
         }
 
         // all tests pass
-        fusedLocationProvider?.lastLocation?.addOnCompleteListener(this) {
+        Log.d(TAG, "Value just before Listener: ${beeViewModel.fusedLocationProvider?.lastLocation}")
+            beeViewModel.fusedLocationProvider?.lastLocation?.addOnCompleteListener(this) {
             locationRequestTask ->
             val location = locationRequestTask.result
+            Log.d(TAG, "User located at $location")
             if (location != null) {
-                Log.d(TAG, "User located at $location")
                 val userLocation = GeoPoint(location.latitude, location.longitude)
-                currentUserLocation = userLocation
+                    beeViewModel.currentUserLocation = userLocation
             } else {
-                Log.d(TAG, "User NOT located at $location")
+                Log.e(TAG, "User location returned null")
 
                 showSnackbar(getString(R.string.no_location))
             }
@@ -63,9 +68,10 @@ class MainActivity : AppCompatActivity() {
     fun requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true
+            beeViewModel.locationPermissionGranted = true
             Log.d(TAG, "permission already granted")
-            fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
+                beeViewModel.fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
+            Log.d(TAG, "Value of fusedLocationProvider = ${beeViewModel.fusedLocationProvider.toString()}")
         } else {
             // need to ask permission
             val requestLocationPermissionLauncher =
@@ -73,11 +79,12 @@ class MainActivity : AppCompatActivity() {
                     granted ->
                     if (granted) {
                         Log.d(TAG, "User Granted Permission")
-                        locationPermissionGranted = true
-                        fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
+                            beeViewModel.locationPermissionGranted = true
+                                beeViewModel.fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
+                        Log.d(TAG, "Value of fusedLocationProvider = ${beeViewModel.fusedLocationProvider.toString()}")
                     } else {
                         Log.d(TAG, "User did not grant permission")
-                        locationPermissionGranted = false
+                            beeViewModel.locationPermissionGranted = false
                     }
                 }
             requestLocationPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
