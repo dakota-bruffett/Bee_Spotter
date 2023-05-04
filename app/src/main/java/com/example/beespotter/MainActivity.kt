@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")  // There are checks in place already.
     fun verifyLocation() {
         // check for permissions and existance of maps, locations, etc.
-//        if (map == null) { return } // TODO This might be needed later
+//        if (map == null) { return } //  ****This might be needed later
         if (beeViewModel.fusedLocationProvider == null) { return }
         Log.d(TAG, "Value of fusedLocationProvider within verifyLocation() = ${beeViewModel.fusedLocationProvider.toString()}")
         if (!beeViewModel.locationPermissionGranted) {
