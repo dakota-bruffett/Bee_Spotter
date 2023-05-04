@@ -5,4 +5,7 @@
     <string name="click">Click</string>
     <string name="preview_button">Preview_Button</string>
     <string name="picture_button">Picture_button</string>
+    <string name="view_map_button_text" />
+    <string name="beespotter_title_card_content_desc" />
+    <string name="add_a_bee_button_text" />
 </resources>
