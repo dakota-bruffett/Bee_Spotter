@@ -9,7 +9,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.GeoPoint
 
@@ -27,13 +31,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         containerView = findViewById(R.id.fragmentContainer)
         requestLocationPermission()
+        verifyLocation()
+        Log.d(TAG, "User location in BeeViewModel = ${beeViewModel.currentUserLocation.toString()}")
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume(): beeViewModel.currentUserLocation = ${beeViewModel.currentUserLocation.toString()}")
-        verifyLocation()
-    }
 
     @SuppressLint("MissingPermission")  // There are checks in place already.
     fun verifyLocation() {
@@ -48,14 +49,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         // all tests pass
-        Log.d(TAG, "Value just before Listener: ${beeViewModel.fusedLocationProvider?.lastLocation}")
-            beeViewModel.fusedLocationProvider?.lastLocation?.addOnCompleteListener(this) {
+        Log.d(TAG, "Value just before Listener: ${beeViewModel.fusedLocationProvider?.lastLocation.toString()}")
+            beeViewModel.fusedLocationProvider?.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY,
+                object: CancellationToken() {
+                    override fun onCanceledRequested(p0: OnTokenCanceledListener) = CancellationTokenSource().token
+                    override fun isCancellationRequested() = false
+                })
+                ?.addOnSuccessListener {
             locationRequestTask ->
-            val location = locationRequestTask.result
+            val locationLat = locationRequestTask.latitude
+                    val locationLong= locationRequestTask.longitude
+                    val location = GeoPoint(locationLat, locationLong)
             Log.d(TAG, "User located at $location")
             if (location != null) {
-                val userLocation = GeoPoint(location.latitude, location.longitude)
-                    beeViewModel.currentUserLocation = userLocation
+                    beeViewModel.currentUserLocation = location
             } else {
                 Log.e(TAG, "User location returned null")
 
