@@ -12,8 +12,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ktx.Firebase
@@ -34,35 +37,46 @@ private const val BEELOCATION = "Bee location"
  */
 class CameraFragment : Fragment() {
 
-    private var Bee: String? = null
-    private var Beelocation: String? = null
-    private var BeePhotoPath: String? = null
+    private var bee: String? = null
+    private var beelocation: String? = null
+    private var beePhotoPath: String? = null
     private var photoUri: Uri? = null
+    private var visibleImagePath: String? = null
     private val storage = Firebase.storage
-    private var BeeFilename: String? = null
+    private var beeFilename: String? = null
     private val cameraActivityLanucher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             result -> handleBeeImage(result)
     }
 
     private fun handleBeeImage(result: ActivityResult?) {
+        if (result != null) {
+            when(result.resultCode){
+                AppCompatActivity.RESULT_OK ->{
+                    Log.d(TAG,"Result is all good and ready to be used ")
+                    visibleImagePath = beePhotoPath
 
+                }
+                AppCompatActivity.RESULT_CANCELED ->
+                    Log.d(TAG,"You cancelled your image")
+            }
+        }
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            Bee = it.getString(BEE)
-            Beelocation = it.getString(BEELOCATION)
+            bee = it.getString(BEE)
+            beelocation = it.getString(BEELOCATION)
         }
     }
 
     private fun CreateBeeImageFile():Pair<File?,String?>{
         try {
             val dateTime = SimpleDateFormat("yyyyMMdd_HHmm").format(Date())
-            BeeFilename ="BeeImageFile_$dateTime"
+            beeFilename ="BeeImageFile_$dateTime"
             val StorageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            val file = File.createTempFile(BeeFilename!!,"jpg",StorageDir)
+            val file = File.createTempFile(beeFilename!!,"jpg",StorageDir)
             val filepath = file.absolutePath
             return file to filepath
         }catch(ex:IOException){
@@ -70,36 +84,23 @@ class CameraFragment : Fragment() {
         }
     }
     private fun SaveBee(){
-        if (photoUri != null && BeeFilename != null){
+        if (photoUri != null && beeFilename != null){
             val BeeStorageRootReference = storage.reference
             val BeeImageCollection = BeeStorageRootReference.child("BeeImage")
-            val BeeFileReference = BeeImageCollection.child(BeeFilename!!)
+            val BeeFileReference = BeeImageCollection.child(beeFilename!!)
             BeeFileReference.putFile(photoUri!!).addOnCompleteListener{
 
                 Snackbar.make(requireView(),"BeeloadImage",Snackbar.LENGTH_LONG ).show()
             }.addOnFailureListener{ error ->
                 Snackbar.make(requireView(), "BeeloadImage",Snackbar.LENGTH_LONG ).show()
-            Log.e(TAG, "Could not upload$BeeFilename",error)}
+            Log.e(TAG, "Could not upload$beeFilename",error)}
         }
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_camera, container, false)
-        return view
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = CameraFragment()
-    }private fun takeBeePicture(){
+    private fun takeBeePicture(){
         val BeePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val (photoFile,PathPhotoFile) = CreateBeeImageFile()
         if (photoFile != null){
-            BeePhotoPath = PathPhotoFile
+            beePhotoPath = PathPhotoFile
             val photoUri = FileProvider.getUriForFile(
                 requireActivity(),
                 "com.example.BeeSpotter.fileprovider",
@@ -110,5 +111,26 @@ class CameraFragment : Fragment() {
         }
         BeePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri)
         cameraActivityLanucher.launch(BeePictureIntent)
+    }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+
+
+
+
+        val view = inflater.inflate(R.layout.fragment_camera, container, false)
+        view.findViewById<ImageButton>(R.id.CameraImage).setOnClickListener { cameraActivityLanucher}
+        view.findViewById<Button>(R.id.Save).text
+        view.findViewById<Button>(R.id.Picture_Button).text
+        return view
+    }
+
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = CameraFragment()
     }
 }

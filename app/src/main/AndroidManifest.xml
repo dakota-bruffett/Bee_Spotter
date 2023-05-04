@@ -25,13 +25,14 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="com.example.beespotter.MainActivity.FileProvider"
+            android:authorities="com.example.beespotter.FileProvider"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
-            android:grantUriPermissions="true"/>
+            android:grantUriPermissions="true">
         <meta-data
             android:name="android.support.FILE_PROVIDER_PATHS"
             android:resource="@xml/file_path"/>
+    </provider>
     </application>
 
 </manifest>
