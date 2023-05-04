@@ -61,7 +61,7 @@ class CameraFragment : Fragment() {
         try {
             val dateTime = SimpleDateFormat("yyyyMMdd_HHmm").format(Date())
             BeeFilename ="BeeImageFile_$dateTime"
-            val StorageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            val StorageDir = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             val file = File.createTempFile(BeeFilename!!,"jpg",StorageDir)
             val filepath = file.absolutePath
             return file to filepath
@@ -76,9 +76,9 @@ class CameraFragment : Fragment() {
             val BeeFileReference = BeeImageCollection.child(BeeFilename!!)
             BeeFileReference.putFile(photoUri!!).addOnCompleteListener{
 
-                Snackbar.make(CameraLayout,"BeeloadImage",Snackbar.LENGTH_LONG ).show()
+                Snackbar.make(requireView(),"BeeloadImage",Snackbar.LENGTH_LONG ).show()
             }.addOnFailureListener{ error ->
-                Snackbar.make(CameraLayout, "BeeloadImage",Snackbar.LENGTH_LONG ).show()
+                Snackbar.make(requireView(), "BeeloadImage",Snackbar.LENGTH_LONG ).show()
             Log.e(TAG, "Could not upload$BeeFilename",error)}
         }
     }
@@ -101,7 +101,7 @@ class CameraFragment : Fragment() {
         if (photoFile != null){
             BeePhotoPath = PathPhotoFile
             val photoUri = FileProvider.getUriForFile(
-                this,
+                requireActivity(),
                 "com.example.BeeSpotter.fileprovider",
                 photoFile
 
