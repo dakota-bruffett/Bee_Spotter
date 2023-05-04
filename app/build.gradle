@@ -49,7 +49,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     implementation 'com.google.firebase:firebase-firestore-ktx:24.6.0'
-    implementation platform('com.google.firebase:firebase-bom:29.0.0')
+
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
