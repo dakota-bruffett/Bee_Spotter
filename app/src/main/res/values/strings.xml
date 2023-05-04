@@ -3,6 +3,7 @@
     <string name="beespotter_title_card_content_desc">BeeSpotter Title Card</string>
     <string name="view_map_button_text">View Map</string>
     <string name="add_a_bee_button_text">Add a Bee</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_bee">Add bee</string>
+    <string name="home">Home</string>
+    <string name="give_location_permission">Grant location permission to add bees</string>
 </resources>
