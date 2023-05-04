@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="com.example.beespotter.MainActivity"
+            android:authorities="com.example.beespotter.MainActivity.FileProvider"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true"/>
