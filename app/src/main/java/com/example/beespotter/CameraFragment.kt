@@ -56,22 +56,7 @@ class CameraFragment : Fragment() {
             Beelocation = it.getString(BEELOCATION)
         }
     }
-    private fun takeBeePicture(){
-        val BeePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val (photoFile,PathPhotoFile) = CreateBeeImageFile()
-        if (photoFile != null){
-            BeePhotoPath = PathPhotoFile
-            val photoUri = FileProvider.getUriForFile(
-                this,
-                "com.example.BeeSpotter.fileprovider",
-                photoFile
 
-            )
-
-        }
-            BeePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri)
-            cameraActivityLanucher.launch(BeePictureIntent)
-    }
     private fun CreateBeeImageFile():Pair<File?,String?>{
         try {
             val dateTime = SimpleDateFormat("yyyyMMdd_HHmm").format(Date())
@@ -110,5 +95,20 @@ class CameraFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = CameraFragment()
+    }private fun takeBeePicture(){
+        val BeePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val (photoFile,PathPhotoFile) = CreateBeeImageFile()
+        if (photoFile != null){
+            BeePhotoPath = PathPhotoFile
+            val photoUri = FileProvider.getUriForFile(
+                this,
+                "com.example.BeeSpotter.fileprovider",
+                photoFile
+
+            )
+
+        }
+        BeePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri)
+        cameraActivityLanucher.launch(BeePictureIntent)
     }
 }
