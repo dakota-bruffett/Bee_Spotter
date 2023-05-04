@@ -50,25 +50,26 @@ class MainActivity : AppCompatActivity() {
 
         // all tests pass
         Log.d(TAG, "Value just before Listener: ${beeViewModel.fusedLocationProvider?.lastLocation.toString()}")
-            beeViewModel.fusedLocationProvider?.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY,
-                object: CancellationToken() {
-                    override fun onCanceledRequested(p0: OnTokenCanceledListener) = CancellationTokenSource().token
-                    override fun isCancellationRequested() = false
-                })
-                ?.addOnSuccessListener {
-            locationRequestTask ->
-            val locationLat = locationRequestTask.latitude
-                    val locationLong= locationRequestTask.longitude
-                    val location = GeoPoint(locationLat, locationLong)
-            Log.d(TAG, "User located at $location")
-            if (location != null) {
-                    beeViewModel.currentUserLocation = location
-            } else {
-                Log.e(TAG, "User location returned null")
+        @Suppress("DEPRECATION")
+        beeViewModel.fusedLocationProvider?.getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY,
+            object: CancellationToken() {
+                override fun onCanceledRequested(p0: OnTokenCanceledListener) = CancellationTokenSource().token
+                override fun isCancellationRequested() = false
+            })
+            ?.addOnSuccessListener {
+        locationRequestTask ->
+        val locationLat = locationRequestTask.latitude
+                val locationLong= locationRequestTask.longitude
+                val location = GeoPoint(locationLat, locationLong)
+        Log.d(TAG, "User located at $location")
+        if (location != null) { // labelled as always true
+                beeViewModel.currentUserLocation = location
+        } else {
+            Log.e(TAG, "User location returned null")
 
-                showSnackbar(getString(R.string.no_location))
-            }
+            showSnackbar(getString(R.string.no_location))
         }
+    }
 
     }
 
