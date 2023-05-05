@@ -67,6 +67,7 @@ class MapFragment : Fragment() {
 
         drawBees()
     }
+
     private fun setAddBeeButtonEnabled(isEnabled: Boolean) {
         addBeeButton.isClickable = isEnabled
         addBeeButton.isFocusable = isEnabled
@@ -124,7 +125,9 @@ class MapFragment : Fragment() {
     private fun addBeeAtLocation() {
 
         if (fusedLocationProvider == null)  { return }
-        if (!locationPermissionGranted)  { return }
+        if (!locationPermissionGranted)  {
+            showSnackbar(getString(R.string.give_location_permission))
+        }
 
         try {
             fusedLocationProvider?.lastLocation?.addOnCompleteListener(requireActivity()) { task ->
@@ -137,6 +140,7 @@ class MapFragment : Fragment() {
                         location = GeoPoint(location.latitude, location.longitude)
                     )
                     beeViewModel.addBee(bee)
+                    movedMapToUserLocation()
                     showSnackbar(getString(R.string.add_bee, beeMarkers))
                 } else {
                     showSnackbar(getString(R.string.no_location))
@@ -205,14 +209,17 @@ class MapFragment : Fragment() {
         // Inflate the layout for this fragment
         val mainView = inflater.inflate(R.layout.fragment_map, container, false)
 
+        // Add bee and redirect to camera fragment
         var addBeeButton = mainView.findViewById(R.id.add_bee)
         addBeeButton.setOnClickListener {
             addBeeAtLocation()
             getCamera()
         }
 
+        // Take user back to home fragment
         var homeButton = mainView.findViewById(R.id.go_home)
         homeButton.setOnClickListener {
+            getHome()
 
         }
 
@@ -230,12 +237,10 @@ class MapFragment : Fragment() {
     }
 
     fun addBeeAtLocation(): CameraFragment.Companion {
-        if (addBeeAtLocation != null)
-             getCamera()
-            addBeeAtLocation()
-        //val cameraFragment = null
-        return
+
+        return  getCamera()
     }
+
 
     private fun requestLocationPermission() {
 
