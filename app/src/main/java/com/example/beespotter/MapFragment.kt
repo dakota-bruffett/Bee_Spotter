@@ -18,7 +18,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.GeoPoint
 import com.google.type.Date
@@ -33,7 +35,7 @@ class MapFragment : Fragment() {
     // Ask users for permission to allow their current locations
     private var locationPermissionGranted = false
 
-    private var moveMapToUserLocation = false
+    private var movedMapToUserLocation = false
 
     private var fusedLocationProvider: FusedLocationProviderClient? = null
 
@@ -47,7 +49,7 @@ class MapFragment : Fragment() {
         ViewModelProvider(requireActivity()).get(BeeViewModel::class.java)
     }
 
-    private val mapReadyCallback = OnMapReadyCallback {  googleMap ->
+    private val mapReadyCallback = OnMapReadyCallback { googleMap ->
 
         Log.d(TAG, "Google map ready")
         map = googleMap
@@ -63,34 +65,63 @@ class MapFragment : Fragment() {
             setAddBeeButtonEnabled(true)
         }
 
-        drawBee()
+        drawBees()
+    }
+    private fun setAddBeeButtonEnabled(isEnabled: Boolean) {
+        addBeeButton.isClickable = isEnabled
+        addBeeButton.isFocusable = isEnabled
+
+        if (isEnabled) {
+            addBeeButton.backgroundTintList = AppCompatResources.getColorStateList(
+                requireActivity(),
+                android.R.color.holo_green_light
+            )
+        } else {
+            addBeeButton.backgroundTintList = AppCompatResources.getColorStateList(
+                requireActivity(),
+                android.R.color.holo_orange_light
+            )
+        }
     }
 
-    private fun drawBee() {
-        if (map == null) { return }
+    private fun drawBees() {
+        if (map == null) {
+            return
+        }
 
-        for (marker in BeeMarkers) {
+        for (marker in beeMarkers) {
             marker.remove()
         }
 
-        BeeMarkers.clear()
+        beeMarkers.clear()
 
-        for (bee in beeList) {
-            bee.latLong()?.let { latLong ->
-                val mo = MarkerOptions().position(latLong).title(bee.name)
-                map?.addMarker(mo)?.also { marker ->
+        for (bee in this.beeList) {
+
+            val isFavorite = bee.location ?: false
+            val iconId = if (isFavorite as Boolean) R.drawable.bee_icon else R.drawable.home
+
+            bee.location?.let { location ->
+                val markerOptions = MarkerOptions()
+                    .position(
+                        com.google.android.gms.maps.model.LatLng(
+                            location.latitude,
+                            location.longitude
+                        )
+                    )
+                    .title(bee.location.toString())
+                    .snippet("Spotted on ${bee.dateSpotted}")
+                    .icon(BitmapDescriptorFactory.fromResource(iconId))
+
+                map?.addMarker(markerOptions)?.also { marker ->
                     beeMarkers.add(marker)
+                    marker.tag = bee
                 }
             }
         }
     }
 
-
-
-}
-
     @SuppressLint("MissingPermission")
-    private fun addTreeAtLocation() {
+    private fun addBeeAtLocation() {
 
         if (fusedLocationProvider == null)  { return }
         if (!locationPermissionGranted)  { return }
@@ -100,10 +131,9 @@ class MapFragment : Fragment() {
                 val location = task.result
 
                 if (location != null) {
-                    val bee = beeMarkers()
+
                     val bee = Bee(
-                        bee = beeMarkers,
-                        dateSpotted = Date(),
+                        dateSpotted = java.util.Date(),
                         location = GeoPoint(location.latitude, location.longitude)
                     )
                     beeViewModel.addBee(bee)
@@ -118,66 +148,10 @@ class MapFragment : Fragment() {
         }
     }
 
-    private fun setAddBeeButtonEnabled(isEnabled: Boolean) {
-        addBeeButton.isClickable = isEnabled
-        addBeeButton.isFocusable = isEnabled
-
-        if(isEnabled) {
-            addBeeButton.backgroundTintList = AppCompatResources.getColorStateList(requireActivity(),
-                android.R.color.holo_green_light)
-        }else {
-            addBeeButton.backgroundTintList = AppCompatResources.getColorStateList(requireActivity(),
-                android.R.color.holo_orange_light)
-        }
-    }
-
     private fun showSnackbar(message: String) {
         Snacker.make(requireView(), message, Snacker.LENGTH_LONG).show()
     }
 
-    private fun requestLocationPermission() {
-
-        if (ContextCompat.checkSelfPermission(requireActivity(),
-            Manifest.permission.ACCESS_FINE_LOCAION) == PackageManager.PERMISSION_GRANTED) {
-
-            locationPermissionGranted = true
-            Log.d(TAG, "permission already granted")
-            updateMap()
-            setAddBeeButtonEnabled(true)
-
-        }else {
-            val requestLocationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-                if (granted) {
-                    Log.d(TAG, "User granted permission")
-                    setAddBeeButtonEnabled(true)
-                    locationPermissionGranted = true
-                    fusedLocationProvider = LocationServices.getFusedLocationProviderClient(requireActivity())
-
-                } else {
-                    Log.d(TAG, "User did not grant permission")
-                    setAddBeeButtonEnabled(false)
-                    locationPermissionGranted = false
-                    showSnackbar(getString(R.string.give_permission))
-                }
-
-                updateMap()
-            }
-
-            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-    }
-
-//    private fun drawBees() {
-//        if (map == null) { return }
-//
-//            // override by removing old markers and add new ones.
-//
-//            for (marker in beeMarkers) {
-//                marker.remove()
-//            }
-//
-//            beeMarkers.clear()
-//
-//        }
 
     @SuppressLint("MissingPermission")
     private fun moveMapToUserLocation() {
@@ -229,19 +203,22 @@ class MapFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val mainView =  inflater.inflate(R.layout.fragment_map, container, false)
+        val mainView = inflater.inflate(R.layout.fragment_map, container, false)
 
-        addBeeButton = mainView.findViewById(R.id.add_bee)
+        var addBeeButton = mainView.findViewById(R.id.add_bee)
         addBeeButton.setOnClickListener {
-
+            addBeeAtLocation()
+            getCamera()
         }
 
-        homeButton = mainView.findViewById(R.id.go_home)
+        var homeButton = mainView.findViewById(R.id.go_home)
         homeButton.setOnClickListener {
 
         }
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map_view) as SupportMapFragment?
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_view) as SupportMapFragment?
+        val mapReadyCallback
         mapFragment?.getMapAsync(mapReadyCallback)
 
         setAddBeeButtonEnabled(false)
@@ -252,9 +229,64 @@ class MapFragment : Fragment() {
         return mainView
     }
 
+    fun addBeeAtLocation(): CameraFragment.Companion {
+        if (addBeeAtLocation != null)
+             getCamera()
+            addBeeAtLocation()
+        //val cameraFragment = null
+        return
+    }
+
+    private fun requestLocationPermission() {
+
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCAION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+
+                locationPermissionGranted = true
+                Log.d(TAG, "permission already granted")
+                updateMap()
+                setAddBeeButtonEnabled(true)
+
+            } else {
+                val requestLocationPermissionLauncher =
+                    registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+                        if (granted) {
+                            Log.d(TAG, "User granted permission")
+                            setAddBeeButtonEnabled(true)
+                            locationPermissionGranted = true
+                            fusedLocationProvider =
+                                LocationServices.getFusedLocationProviderClient(requireActivity())
+
+                        } else {
+                            Log.d(TAG, "User did not grant permission")
+                            setAddBeeButtonEnabled(false)
+                            locationPermissionGranted = false
+                            showSnackbar(getString(R.string.give_permission))
+                        }
+
+                        updateMap()
+                    }
+
+                requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+
+    private fun getHome(): Any {
+        return HomeFragment
+    }
+
+    private fun getCamera(): CameraFragment.Companion {
+        return CameraFragment
+    }
+    fun setAddBeeButtonEnabled(b: Boolean) {
+
+    }
+
     companion object {
 
         @JvmStatic
         fun newInstance() = MapFragment()
     }
-}
