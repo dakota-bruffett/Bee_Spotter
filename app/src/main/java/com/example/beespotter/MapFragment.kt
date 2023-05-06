@@ -139,11 +139,12 @@ class MapFragment : Fragment() {
 
                 if (location != null) {
 
+                    // time stamp bee origin
                     val bee = Bee(
                         dateSpotted = java.util.Date(),
                         location = GeoPoint(location.latitude, location.longitude)
                     )
-                    beeViewModel.addBee(bee)
+                    beeViewModel.addBee(bee)// add bee pictures and save in beeViewModel
                     moveMapToUserLocation()
                     showSnackbar(getString(R.string.add_bee))
                 } else {
@@ -195,7 +196,7 @@ class MapFragment : Fragment() {
                 }
 
             }
-
+        // display message to user regarding to location and permission not allow
         } catch (ex: SecurityException) {
             Log.e(TAG, "Showing user's location on map - permission not requested", ex)
             locationPermissionGranted = false
@@ -221,7 +222,7 @@ class MapFragment : Fragment() {
             getCamera()
         }
 
-        // Take user back to home fragment
+        // home button redirect user back to home fragment
         val homeButton: FloatingActionButton = mainView.findViewById(R.id.go_home)
         homeButton.setOnClickListener {
             getHome()
@@ -283,12 +284,14 @@ class MapFragment : Fragment() {
         }
     }
 
+    // redirect user to home fragment
     private fun getHome(): Any {
-        return HomeFragment
+        return HomeFragment //
     }
 
+    // take user to camera fragment
     private fun getCamera(): CameraFragment.Companion {
-        return CameraFragment
+        return CameraFragment //
     }
 
 
