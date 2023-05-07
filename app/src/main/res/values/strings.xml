@@ -6,6 +6,7 @@
     <string name="add_bee">Add bee</string>
     <string name="home">Home</string>
     <string name="give_location_permission">Grant location permission to add bees</string>
-    <string name="no_location">No location</string>
+    <string name="no_location">No location available.</string>
     <string name="give_permission">give permission\n</string>
+    <string name="user_message_location_permission_needed">Location permission needed for New Bee Locations</string>
 </resources>
