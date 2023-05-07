@@ -21,8 +21,11 @@ import androidx.core.content.FileProvider
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 import java.io.File
 import java.io.IOException
+import java.lang.Exception
 import java.util.*
 
 
@@ -112,6 +115,8 @@ class CameraFragment : Fragment() {
         BeePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoUri)
         cameraActivityLanucher.launch(BeePictureIntent)
     }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -124,8 +129,24 @@ class CameraFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_camera, container, false)
         view.findViewById<ImageButton>(R.id.CameraImage).setOnClickListener { cameraActivityLanucher}
         view.findViewById<Button>(R.id.Save).setOnClickListener { SaveBee() }
-        view.findViewById<Button>(R.id.Picture_Button).text
+        view.findViewById<Button>(R.id.Picture_Button).setOnClickListener { takeBeePicture() }
         return view
+    }
+    private fun loadBeeImage(CameraImage:ImageButton ,imagepath : String){
+        Picasso.get()
+            .load(imagepath)
+            .error(android.R.drawable.stat_notify_error)
+            .fit()
+            .centerCrop()
+            .into(CameraImage,object: Callback {
+            override fun onSuccess(){
+                Log.d(TAG, "Loaded Image$CameraImage")
+            }
+
+                override fun onError(e: Exception?) {
+                    Log.e(TAG,"Failed to load image $CameraImage",e)
+                }
+            })
     }
 
 
