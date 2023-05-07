@@ -45,6 +45,8 @@ class CameraFragment : Fragment() {
     private var beePhotoPath: String? = null
     private var photoUri: Uri? = null
     private var visibleImagePath: String? = null
+    private val NEW_PHOTO_KEY = "heres is a Photo key"
+    private val VISABLE_KEY = "here is your visual key"
     private val storage = Firebase.storage
     private var beeFilename: String? = null
     private val cameraActivityLanucher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
@@ -64,7 +66,11 @@ class CameraFragment : Fragment() {
             }
         }
     }
-
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(NEW_PHOTO_KEY,beePhotoPath)
+        outState.putString(VISABLE_KEY,visibleImagePath)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +110,7 @@ class CameraFragment : Fragment() {
         val (photoFile,PathPhotoFile) = CreatebeeImageFile()
         if (photoFile != null){
             beePhotoPath = PathPhotoFile
-            val photoUri = FileProvider.getUriForFile(
+            FileProvider.getUriForFile(
                 requireActivity(),
                 "com.example.BeeSpotter.fileprovider",
                 photoFile
