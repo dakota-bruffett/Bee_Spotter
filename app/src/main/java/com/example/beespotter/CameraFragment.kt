@@ -71,7 +71,7 @@ class CameraFragment : Fragment() {
         }
     }
 
-    private fun CreateBeeImageFile():Pair<File?,String?>{
+    private fun CreatebeeImageFile():Pair<File?,String?>{
         try {
             val dateTime = SimpleDateFormat("yyyyMMdd_HHmm").format(Date())
             beeFilename ="BeeImageFile_$dateTime"
@@ -98,7 +98,7 @@ class CameraFragment : Fragment() {
     }
     private fun takeBeePicture(){
         val BeePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val (photoFile,PathPhotoFile) = CreateBeeImageFile()
+        val (photoFile,PathPhotoFile) = CreatebeeImageFile()
         if (photoFile != null){
             beePhotoPath = PathPhotoFile
             val photoUri = FileProvider.getUriForFile(
@@ -123,7 +123,7 @@ class CameraFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_camera, container, false)
         view.findViewById<ImageButton>(R.id.CameraImage).setOnClickListener { cameraActivityLanucher}
-        view.findViewById<Button>(R.id.Save).text
+        view.findViewById<Button>(R.id.Save).setOnClickListener { SaveBee() }
         view.findViewById<Button>(R.id.Picture_Button).text
         return view
     }
