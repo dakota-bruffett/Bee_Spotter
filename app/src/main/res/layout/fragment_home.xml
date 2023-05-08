@@ -35,7 +35,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_card" />
+        app:layout_constraintTop_toBottomOf="@+id/title_card"
+        tools:listitem="@layout/bee_recycler_view_list"/>
 
     <Button
         android:id="@+id/view_map_button"
