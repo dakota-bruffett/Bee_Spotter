@@ -11,4 +11,8 @@
     <string name="user_message_location_permission_needed" />
     <string name="no_location" />
     <string name="map_fragment">Map Fragment</string>
+    <string name="add_bee" />
+    <string name="home" />
+    <string name="give_location_permission">Please give permission</string>
+    <string name="give_permission">Please give permission</string>
 </resources>

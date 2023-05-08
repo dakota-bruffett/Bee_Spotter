@@ -36,6 +36,7 @@ android {
 
 dependencies {
 
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
     modules {
         module("org.jetbrains.kotlin:kotlin-stdlib-jdk7") {
             replacedBy("org.jetbrains.kotlin:kotlin-stdlib", "kotlin-stdlib-jdk7 is now part of kotlin-stdlib")

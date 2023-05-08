@@ -1,6 +1,8 @@
 package com.example.beespotter
 
+import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
@@ -45,6 +47,8 @@ class CameraFragment : Fragment() {
     private var beePhotoPath: String? = null
     private var photoUri: Uri? = null
     private var visibleImagePath: String? = null
+    private val CameraImage: String? = null
+    private val imagepath: String? = null
     private val NEW_PHOTO_KEY = "heres is a Photo key"
     private val VISABLE_KEY = "here is your visual key"
     private val storage = Firebase.storage
@@ -134,30 +138,51 @@ class CameraFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_camera, container, false)
         view.findViewById<ImageButton>(R.id.CameraImage).setOnClickListener { cameraActivityLanucher}
+        view.findViewById<ImageButton>(R.id.CameraImage).setOnClickListener { loadBeeImage(CameraImage = ImageButton(context), imagepath = String())}
         view.findViewById<Button>(R.id.Save).setOnClickListener { SaveBee() }
         view.findViewById<Button>(R.id.Picture_Button).setOnClickListener { takeBeePicture() }
         return view
     }
-    private fun loadBeeImage(CameraImage:ImageButton ,imagepath : String){
+    companion object {
+        @JvmStatic
+        fun newInstance() = CameraFragment()
+    }
+
+    private fun loadBeeImage(CameraImage: ImageButton,imagepath:String) {
         Picasso.get()
             .load(imagepath)
             .error(android.R.drawable.stat_notify_error)
             .fit()
             .centerCrop()
             .into(CameraImage,object: Callback {
-            override fun onSuccess(){
-                Log.d(TAG, "Loaded Image$CameraImage")
-            }
+                override fun onSuccess(){
+                    Log.d(TAG, "Loaded Image$CameraImage")
+                }
 
                 override fun onError(e: Exception?) {
                     Log.e(TAG,"Failed to load image $CameraImage",e)
                 }
             })
     }
-
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = CameraFragment()
-    }
 }
+//
+//    //private fun loadBeeImage(CameraImage:ImageButton ,imagepath : String){
+//      //  Picasso.get()
+//        //    .load(imagepath)
+//            .error(android.R.drawable.stat_notify_error)
+//            .fit()
+//            .centerCrop()
+//            .into(CameraImage,object: Callback {
+//            override fun onSuccess(){
+//                Log.d(TAG, "Loaded Image$CameraImage")
+//            }
+//
+//                override fun onError(e: Exception?) {
+//                    Log.e(TAG,"Failed to load image $CameraImage",e)
+//                }
+//            })
+   // }
+
+
+
+
