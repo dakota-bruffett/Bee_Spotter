@@ -32,7 +32,7 @@ private const val TAG = "BEE_MAP_FRAGMENT"
 class MapFragment : Fragment() {
 
     private lateinit var addBeeButton: FloatingActionButton
-    private var homeButton: FloatingActionButton? = null
+    private lateinit var homeButton: FloatingActionButton
 
     // Ask users for permission to allow their current locations
     private var locationPermissionGranted = false
@@ -50,13 +50,6 @@ class MapFragment : Fragment() {
     private val beeViewModel: BeeViewModel by lazy {
         ViewModelProvider(requireActivity()).get(BeeViewModel::class.java)
     }
-
-//    private val mapReadyCallback = OnMapReadyCallback { googleMap ->
-//
-//        Log.d(TAG, "Google map ready")
-//        map = googleMap
-//        updateMap()
-//    }
 
     private fun updateMap() {
 
