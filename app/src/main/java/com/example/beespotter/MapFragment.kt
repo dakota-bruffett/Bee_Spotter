@@ -32,7 +32,7 @@ private const val TAG = "BEE_MAP_FRAGMENT"
 class MapFragment : Fragment() {
 
     private lateinit var addBeeButton: FloatingActionButton
-    private lateinit var homeButton: FloatingActionButton
+    private var homeButton: FloatingActionButton? = null
 
     // Ask users for permission to allow their current locations
     private var locationPermissionGranted = false
