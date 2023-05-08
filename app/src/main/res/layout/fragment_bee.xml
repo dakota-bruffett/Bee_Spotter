@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:background="#FFDE3B"
         android:paddingTop="45dp"
-        android:text="Bee Fragment"
+        android:text="@string/bee_fragment"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold" />

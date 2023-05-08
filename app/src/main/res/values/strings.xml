@@ -15,4 +15,5 @@
     <string name="home" />
     <string name="give_location_permission">Please give permission</string>
     <string name="give_permission">Please give permission</string>
+    <string name="bee_fragment">Bee Fragment</string>
 </resources>
