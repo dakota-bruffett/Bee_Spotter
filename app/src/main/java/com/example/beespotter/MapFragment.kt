@@ -196,11 +196,6 @@ class MapFragment : Fragment() {
         }
     }
 
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-    // }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -278,13 +273,14 @@ class MapFragment : Fragment() {
     }
 
     // redirect user to home fragment
-    private fun getHome(): Any {
-        return HomeFragment //
+    private fun getHome(): HomeFragment.Companion {
+        return HomeFragment
+
     }
 
     // take user to camera fragment
     private fun getCamera(): CameraFragment.Companion {
-        return CameraFragment //
+        return CameraFragment
     }
 
 
