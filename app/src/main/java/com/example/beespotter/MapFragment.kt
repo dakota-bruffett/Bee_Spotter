@@ -25,10 +25,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.GeoPoint
 import android.Manifest
-import com.google.type.Date
-import com.google.type.LatLng
 
-private const val TAG = "BEE_MAP_FRAGMENT"
+// private const val TAG = "BEE_MAP_FRAGMENT"
 class MapFragment : Fragment() {
 
     private lateinit var addBeeButton: FloatingActionButton
@@ -204,9 +202,9 @@ class MapFragment : Fragment() {
     }
 
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-    // }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
