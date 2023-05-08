@@ -10,4 +10,5 @@
     <string name="add_a_bee_button_text" />
     <string name="user_message_location_permission_needed" />
     <string name="no_location" />
+    <string name="map_fragment">Map Fragment</string>
 </resources>
