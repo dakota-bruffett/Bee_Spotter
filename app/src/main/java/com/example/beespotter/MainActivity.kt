@@ -17,7 +17,7 @@ import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.GeoPoint
 
-const val TAG = "MAIN_ACTIVITY"
+private const val TAG = "MAIN_ACTIVITY"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var containerView: View
