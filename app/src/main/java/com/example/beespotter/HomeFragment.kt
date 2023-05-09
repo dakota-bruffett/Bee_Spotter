@@ -61,8 +61,10 @@ class HomeFragment : Fragment() {
         // Set the RecyclerView's layout manager and adapter
         beeRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         beeRecyclerView.adapter = beeAdapter
+
         initializeWidgets(view)
         setButtonOnClickListeners()
+
         return view
     }
 

@@ -1,302 +1,245 @@
-package com.example.beespotter
-
-import android.annotation.SuppressLint
+import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.location.Location
+import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.beespotter.Bee
+import com.example.beespotter.BeeViewModel
+import com.example.beespotter.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
-import android.Manifest
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayOutputStream
+import java.util.*
 
-// private const val TAG = "BEE_MAP_FRAGMENT"
-class MapFragment : Fragment() {
+class MapFragment : Fragment(), OnMapReadyCallback {
 
-    private lateinit var addBeeButton: FloatingActionButton
-    private lateinit var homeButton: FloatingActionButton
+    private lateinit var mMap: GoogleMap
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var addBeeFab: FloatingActionButton
+    private lateinit var viewModel: BeeViewModel
+    private lateinit var storageRef: StorageReference
+    private lateinit var db: FirebaseFirestore
 
-    // Ask users for permission to allow their current locations
-    private var locationPermissionGranted = false
-
-    private var movedMapToUserLocation = false
-
-    private var fusedLocationProvider: FusedLocationProviderClient? = null
-
-    private var map: GoogleMap? = null
-
-    private val beeMarkers = mutableListOf<Marker>()
-
-    private var beeList = listOf<Bee>()
-
-    private val beeViewModel: BeeViewModel by lazy {
-        ViewModelProvider(requireActivity()).get(BeeViewModel::class.java)
-    }
-
-//    private val mapReadyCallback = OnMapReadyCallback { googleMap ->
-//
-//        Log.d(TAG, "Google map ready")
-//        map = googleMap
-//        updateMap()
-//    }
-
-    private fun updateMap() {
-
-        if (locationPermissionGranted) {
-            if (!movedMapToUserLocation) {
-                moveMapToUserLocation()
-            }
-            setAddBeeButtonEnabled(true)
-        }
-
-        drawBees()
-    }
-
-    private fun setAddBeeButtonEnabled(isEnabled: Boolean) {
-        addBeeButton.isClickable = isEnabled
-        addBeeButton.isFocusable = isEnabled
-
-        if (isEnabled) {
-            addBeeButton.backgroundTintList = AppCompatResources.getColorStateList(
-                requireActivity(),
-                android.R.color.holo_green_light
-            )
-        } else {
-            addBeeButton.backgroundTintList = AppCompatResources.getColorStateList(
-                requireActivity(),
-                android.R.color.holo_orange_light
-            )
-        }
-    }
-
-    private fun drawBees() {
-        if (map == null) {
-            return
-        }
-
-        for (marker in beeMarkers) {
-            marker.remove()
-        }
-
-        beeMarkers.clear()
-
-        for (bee in this.beeList) {
-
-            val isFavorite = bee.location ?: false
-            val iconId = if (isFavorite as Boolean) R.drawable.bee_icon else R.drawable.home
-
-            bee.location?.let { location ->
-                val markerOptions = MarkerOptions()
-                    .position(
-                        com.google.android.gms.maps.model.LatLng(
-                            location.latitude,
-                            location.longitude
-                        )
-                    )
-                    .title(bee.location.toString())
-                    .snippet("Spotted on ${bee.dateSpotted}")
-                    .icon(BitmapDescriptorFactory.fromResource(iconId))
-
-                map?.addMarker(markerOptions)?.also { marker ->
-                    beeMarkers.add(marker)
-                    marker.tag = bee
-                }
-            }
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun addBeeAtLocation() {
-
-        if (fusedLocationProvider == null) {
-            return
-        }
-        if (!locationPermissionGranted) {
-            showSnackbar(getString(R.string.give_location_permission))
-        }
-
-        try {
-            fusedLocationProvider?.lastLocation?.addOnCompleteListener(requireActivity()) { task ->
-                val location = task.result
-
-                if (location != null) {
-
-                    // time stamp bee origin
-                    val bee = Bee(
-                        dateSpotted = java.util.Date(),
-                        location = GeoPoint(location.latitude, location.longitude)
-                    )
-                    beeViewModel.addBee(bee)// add bee pictures and save in beeViewModel
-                    moveMapToUserLocation()
-                    showSnackbar(getString(R.string.add_bee))
-                } else {
-                    showSnackbar(getString(R.string.no_location))
-                }
-            }
-        } catch (ex: SecurityException) {
-            Log.e(TAG, "Adding bee at location - permission not granted", ex)
-
-        }
-    }
-
-    private fun showSnackbar(message: String) {
-        Snackbar.make(requireView(), message, Snackbar.LENGTH_LONG).show()
-    }
-
-
-    @SuppressLint("MissingPermission")
-    private fun moveMapToUserLocation() {
-
-        if (map == null) {
-            return
-        }
-
-        try {
-
-            if (locationPermissionGranted) {
-                fusedLocationProvider =
-                    LocationServices.getFusedLocationProviderClient(requireActivity())
-                map?.isMyLocationEnabled = true   // show blue dot at user's location
-                map?.uiSettings?.isMyLocationButtonEnabled = true  // show move to my location
-
-                fusedLocationProvider?.lastLocation?.addOnCompleteListener(requireActivity()) { task ->
-                    val location = task.result
-                    if (location != null) {
-                        Log.d(TAG, "User location $location")
-                        val center = com.google.android.gms.maps.model.LatLng(
-                            location.latitude,
-                            location.longitude
-                        )
-
-
-                        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 8f))?.also {
-                            movedMapToUserLocation = true
-                        }
-                    } else {
-                        showSnackbar(getString(R.string.no_location))
-                    }
-                }
-
-            }
-        // display message to user regarding to location and permission not allow
-        } catch (ex: SecurityException) {
-            Log.e(TAG, "Showing user's location on map - permission not requested", ex)
-            locationPermissionGranted = false
-        }
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-     }
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
+    private val CAMERA_PERMISSION_REQUEST_CODE = 2
+    private val REQUEST_IMAGE_CAPTURE = 1
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val mainView = inflater.inflate(R.layout.fragment_map, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_map, container, false)
 
-        // Add bee and redirect to camera fragment
-        val addBeeButton: FloatingActionButton = mainView.findViewById(R.id.add_bee)
-        addBeeButton.setOnClickListener {
-            addBeeAtLocation()
-            getCamera()
+        // Initialize the FusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        // Obtain a reference to the SupportMapFragment and register this class as the callback
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+
+        // Get a reference to the BeeViewModel
+        viewModel = ViewModelProvider(requireActivity()).get(BeeViewModel::class.java)
+
+        // Get a reference to the FloatingActionButton and set its OnClickListener
+        addBeeFab = rootView.findViewById(R.id.add_bee_fab)
+        addBeeFab.setOnClickListener {
+            // Request camera permission before opening the camera
+            requestCameraPermission()
+            openCamera()
         }
 
-        // home button redirect user back to home fragment
-        val homeButton: FloatingActionButton = mainView.findViewById(R.id.go_home)
-        homeButton.setOnClickListener {
-            getHome()
+        // Get a reference to the Firebase Storage
+        storageRef = FirebaseStorage.getInstance().reference
 
-        }
+        // Get a reference to the Firebase Firestore
+        db = FirebaseFirestore.getInstance()
 
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map_view) as SupportMapFragment?
-        mapFragment?.getMapAsync(mapReadyCallback)
-
-        setAddBeeButtonEnabled(false)
-
-        requestLocationPermission()
-
-        return mainView
+        return rootView
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
 
-    val mapReadyCallback = OnMapReadyCallback { googleMap ->
-        map = googleMap
-        updateMap()
-    }
+        // Enable zoom controls on the map
+        mMap.uiSettings.isZoomControlsEnabled = true
 
-
-    private fun requestLocationPermission() {
-
-        if (ContextCompat.checkSelfPermission(
-                requireActivity(),
+        // Check if we have permission to access the user's location
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-
-            locationPermissionGranted = true
-            Log.d(TAG, "permission already granted")
-            updateMap()
-            setAddBeeButtonEnabled(true)
-
+            // If we don't have permission, request it
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
         } else {
-            val requestLocationPermissionLauncher =
-                registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-                    if (granted) {
-                        Log.d(TAG, "User granted permission")
-                        setAddBeeButtonEnabled(true)
-                        locationPermissionGranted = true
-                        fusedLocationProvider =
-                            LocationServices.getFusedLocationProviderClient(requireActivity())
-
-                    } else {
-                        Log.d(TAG, "User did not grant permission")
-                        setAddBeeButtonEnabled(false)
-                        locationPermissionGranted = false
-                        showSnackbar(getString(R.string.give_permission))
-                    }
-
-                    updateMap()
+            // If we have permission, get the user's last known location and move the camera there
+            fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
+                if (location != null) {
+                    val userLatLng = LatLng(location.latitude, location.longitude)
+                    mMap.addMarker(MarkerOptions().position(userLatLng).title("You are here"))
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 14f))
                 }
+            }
+        }
 
-            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        // Set an OnMapClickListener to add new bees to the map
+        mMap.setOnMapClickListener { latLng ->
+            // Create a new Bee object with the current timestamp and the clicked location
+            val bee = Bee(GeoPoint(latLng.latitude, latLng.longitude), Date())
+
+            // Save the Bee to Firestore
+            viewModel.addBee(db, bee)
+
+            // Add a marker to the map at the clicked location
+            mMap.addMarker(
+                MarkerOptions().position(latLng).title("Bee").snippet("Click to see details")
+            )
         }
     }
 
-    // redirect user to home fragment
-    private fun getHome(): Any {
-        return HomeFragment //
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // If permission is granted, get the user's last known location and move the camera there
+                    if (ActivityCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    )
+                    fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
+                        if (location != null) {
+                            val userLatLng = LatLng(location.latitude, location.longitude)
+                            mMap.addMarker(MarkerOptions().position(userLatLng).title("You are here"))
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 14f))
+                        }
+                    }
+                } else {
+                    // If permission is denied, show a message and disable the location functionality
+                    Log.d("MapsActivity", "Permission denied")
+                }
+            }
+            CAMERA_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // If camera permission is granted, open the camera
+                    openCamera()
+                } else {
+                    // If camera permission is denied, show a message
+                    Snackbar.make(addBeeFab, R.string.camera_permission_denied_message, Snackbar.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
-    // take user to camera fragment
-    private fun getCamera(): CameraFragment.Companion {
-        return CameraFragment //
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+
+            // Get the image data from the intent and upload it to Firebase Storage
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            val imageRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
+            val baos = ByteArrayOutputStream()
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val imageData = baos.toByteArray()
+            val uploadTask = imageRef.putBytes(imageData)
+
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                // If the upload is successful, create a new Bee object with the current timestamp, the image URL, and the location data
+                val bee = Bee(
+                    location = null, // Keeps erroring!!
+                    dateSpotted = Date(),
+                    pictureFileName = taskSnapshot.metadata?.name
+                )
+
+                // Save the Bee to Firestore
+                viewModel.addBee(db, bee)
+
+                // Show a message indicating that the Bee was added
+                Snackbar.make(addBeeFab, R.string.bee_added_message, Snackbar.LENGTH_LONG).show()
+            }.addOnFailureListener { exception ->
+                // If the upload fails, show an error message
+                Snackbar.make(addBeeFab, R.string.upload_failed_message, Snackbar.LENGTH_LONG).show()
+                Log.e("MapFragment", "Failed to upload image: ${exception.message}")
+            }
+        }
     }
 
+    private fun requestCameraPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.CAMERA
+            )
+        ) {
+            // If the user has previously denied the permission, show an explanation
+            showCameraPermissionExplanation()
+        } else {
+            // Otherwise, request the permission
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+    private fun showCameraPermissionExplanation() {
+        Snackbar.make(addBeeFab, R.string.camera_permission_explanation_message, Snackbar.LENGTH_LONG)
+            .setAction(R.string.ok) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.CAMERA),
+                    CAMERA_PERMISSION_REQUEST_CODE
+                )
+            }.show()
+    }
+
+    private fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+    }
 
     companion object {
-
         @JvmStatic
         fun newInstance() = MapFragment()
     }
-
 }

@@ -9,4 +9,16 @@
     <string name="no_location">No location available.</string>
     <string name="give_permission">give permission\n</string>
     <string name="user_message_location_permission_needed">Location permission needed for New Bee Locations</string>
+    <string name="add_a_bee">add bee</string>
+    <string name="add_bees">Add bees</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="camera_permission_denied">Access to the camera was denied.</string>
+    <string name="location_permission_denied">Access to the location was denied.</string>
+    <string name="image_saved">Image has been saved</string>
+    <string name="image_save_error">Image has been saved</string>
+    <string name="bee_added_message">Bee has been added</string>
+    <string name="upload_failed_message">Upload failed</string>
+    <string name="camera_permission_denied_message">Camera permission denied</string>
+    <string name="camera_permission_explanation_message">Need camera permission</string>
+    <string name="ok">Okay</string>
 </resources>
