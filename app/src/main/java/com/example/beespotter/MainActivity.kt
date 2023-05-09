@@ -16,6 +16,9 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.GeoPoint
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import java.util.*
 
 private const val TAG = "MAIN_ACTIVITY"
 
@@ -33,6 +36,12 @@ class MainActivity : AppCompatActivity() {
         requestLocationPermission()
         verifyLocation()
         Log.d(TAG, "User location in BeeViewModel = ${beeViewModel.currentUserLocation.toString()}")
+
+        val db = Firebase.firestore
+
+        val bee = mapOf("location" to "bees", "dateSpotted" to Date())
+
+        db.collection("bees").add(bee)
     }
 
 
