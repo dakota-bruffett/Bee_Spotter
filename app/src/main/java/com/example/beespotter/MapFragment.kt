@@ -25,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.GeoPoint
 import android.Manifest
+import android.content.ContentValues.TAG
 
 // private const val TAG = "BEE_MAP_FRAGMENT"
 class MapFragment : Fragment() {

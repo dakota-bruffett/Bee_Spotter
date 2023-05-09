@@ -150,7 +150,7 @@ class CameraFragment : Fragment() {
     private fun loadBeeImage(CameraImage: ImageButton,imagepath:String) {
         Picasso.get()
             .load(imagepath)
-            .error(android.R.drawable.stat_notify_error)
+            .error(R.drawable.bee)
             .fit()
             .centerCrop()
             .into(CameraImage,object: Callback {
