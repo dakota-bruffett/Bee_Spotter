@@ -137,10 +137,9 @@ class CameraFragment : Fragment() {
 
 
         val view = inflater.inflate(R.layout.fragment_camera, container, false)
-        view.findViewById<ImageButton>(R.id.CameraImage).setOnClickListener { cameraActivityLanucher}
-        view.findViewById<ImageButton>(R.id.CameraImage).setOnClickListener { loadBeeImage(CameraImage = ImageButton(context), imagepath = String())}
+        view.findViewById<ImageButton>(R.id.CameraImage).setOnClickListener { takeBeePicture()}
         view.findViewById<Button>(R.id.Save).setOnClickListener { SaveBee() }
-        view.findViewById<Button>(R.id.Picture_Button).setOnClickListener { takeBeePicture() }
+        view.findViewById<Button>(R.id.Picture_Button).setOnClickListener { loadBeeImage(CameraImage = ImageButton(context), imagepath = String()) }
         return view
     }
     companion object {
