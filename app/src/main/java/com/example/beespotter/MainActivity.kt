@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        containerView = findViewById(R.id.fragmentContainerView)
+        containerView = findViewById(R.id.fragmentContainer)
         requestLocationPermission()
         verifyLocation()
         Log.d(TAG, "User location in BeeViewModel = ${beeViewModel.currentUserLocation.toString()}")

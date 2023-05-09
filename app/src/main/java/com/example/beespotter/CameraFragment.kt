@@ -147,7 +147,7 @@ class CameraFragment : Fragment() {
         fun newInstance() = CameraFragment()
     }
 
-    private fun loadBeeImage(CameraImage: ImageButton,imagepath:String) {
+    private fun loadBeeImage(CameraImage: ImageButton, imagepath: String) {
         Picasso.get()
             .load(imagepath)
             .error(R.drawable.bee)
