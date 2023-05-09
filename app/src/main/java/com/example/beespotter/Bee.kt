@@ -1,5 +1,6 @@
 package com.example.beespotter
 
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.GeoPoint

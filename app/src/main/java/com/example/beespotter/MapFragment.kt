@@ -210,7 +210,7 @@ class MapFragment : Fragment() {
             getCamera()
         }
 
-        // home button redirect user back to home fragment
+        // home button redirects user back to home fragment
         val homeButton: FloatingActionButton = mainView.findViewById(R.id.go_home)
         homeButton.setOnClickListener {
             getHome()
