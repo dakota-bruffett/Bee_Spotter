@@ -204,14 +204,14 @@ class MapFragment : Fragment() {
         val mainView = inflater.inflate(R.layout.fragment_map, container, false)
 
         // Add bee and redirect to camera fragment
-        val addBeeButton: FloatingActionButton = mainView.findViewById(R.id.add_bee)
+        addBeeButton = mainView.findViewById(R.id.add_bee)
         addBeeButton.setOnClickListener {
             addBeeAtLocation()
             getCamera()
         }
 
         // home button redirects user back to home fragment
-        val homeButton: FloatingActionButton = mainView.findViewById(R.id.go_home)
+        homeButton = mainView.findViewById(R.id.go_home)
         homeButton.setOnClickListener {
             getHome()
 
