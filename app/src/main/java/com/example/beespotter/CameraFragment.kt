@@ -19,13 +19,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.google.protobuf.DescriptorProtos
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import java.io.File
 import java.io.IOException
 import java.util.*
+
 
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,7 +48,7 @@ class CameraFragment : Fragment() {
     private var photoUri: Uri? = null
     private var visibleImagePath: String? = null
     private val CameraImage: String? = null
-    private val imagepath: String? = null
+    private val imagepath: GeoPoint? = null
     private val NEW_PHOTO_KEY = "heres is a Photo key"
     private val VISABLE_KEY = "here is your visual key"
     private val storage = Firebase.storage
@@ -136,7 +139,9 @@ class CameraFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_camera, container, false)
         view.findViewById<ImageButton>(R.id.CameraImage).setOnClickListener { takeBeePicture()}
         view.findViewById<Button>(R.id.Save).setOnClickListener { SaveBee() }
-        view.findViewById<Button>(R.id.Picture_Button).setOnClickListener { loadBeeImage(CameraImage = ImageButton(context), imagepath = String()) }
+        view.findViewById<Button>(R.id.Picture_Button).setOnClickListener { loadBeeImage(CameraImage = ImageButton(context),
+            BeePhotoFile = String()
+        ) }
         return view
     }
     companion object {
@@ -144,9 +149,9 @@ class CameraFragment : Fragment() {
         fun newInstance() = CameraFragment()
     }
 
-    private fun loadBeeImage(CameraImage: ImageButton, imagepath: String) {
+    private fun loadBeeImage(CameraImage: ImageButton, BeePhotoFile: String) {
         Picasso.get()
-            .load(imagepath)
+            .load(BeePhotoFile)
             .error(R.drawable.bee)
             .fit()
             .centerCrop()
@@ -158,7 +163,8 @@ class CameraFragment : Fragment() {
                 override fun onError(e: Exception?) {
                     Log.e(TAG,"Failed to load image $CameraImage",e)
                 }
-            })
+            }
+            )
     }
 }
 //
