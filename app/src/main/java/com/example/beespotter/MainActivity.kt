@@ -16,8 +16,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.GeoPoint
-
-private const val TAG = "MAIN_ACTIVITY"
+const val TAG = "MAIN_ACTIVITY"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var containerView: View
@@ -29,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        containerView = findViewById(R.id.fragmentContainer)
+        containerView = findViewById(R.id.fragmentContainerView)
         requestLocationPermission()
         verifyLocation()
         Log.d(TAG, "User location in BeeViewModel = ${beeViewModel.currentUserLocation.toString()}")

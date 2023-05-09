@@ -27,7 +27,7 @@ import com.google.firebase.firestore.GeoPoint
 import android.Manifest
 import android.content.ContentValues.TAG
 
- private const val TAG = "BEE_MAP_FRAGMENT"
+// private const val TAG = "BEE_MAP_FRAGMENT"
 class MapFragment : Fragment() {
 
     private lateinit var addBeeButton: FloatingActionButton
