@@ -16,4 +16,17 @@
     <string name="give_location_permission">Please give permission</string>
     <string name="give_permission">Please give permission</string>
     <string name="bee_fragment">Bee Fragment</string>
+    <string name="beespotter_title_card_content_desc">BeeSpotter Title Card</string>
+    <string name="view_map_button_text">View Map</string>
+    <string name="add_a_bee_button_text">Add a Bee</string>
+
+    <string name="user_message_location_permission_needed">Location permission needed for New Bee Locations</string>
+    <string name="no_location">My Location not available.</string>
+    <string name="add_bee">Please add bee</string>
+    <string name="home">Please add home</string>
+
+    <string name="give_location_permission">Grant location permission to add bees</string>
+    <string name="give_permission">give permission\n</string>
+
+
 </resources>
