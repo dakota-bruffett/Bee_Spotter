@@ -30,7 +30,8 @@
         android:src="@drawable/bee_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/add_bee" />
+        android:contentDescription="@string/add_bee"
+        android:focusable="true" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/go_home"
